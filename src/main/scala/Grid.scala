@@ -39,6 +39,32 @@ class Grid(grid: Vector[Token]) {
     index = buildIndex(row, column)
   } yield grid(index)
 
+  def columns: Seq[Seq[Token]] = for {
+    column <- 1 to dimension
+  } yield for {
+    row <- 1 to dimension
+    index = buildIndex(row, column)
+  } yield grid(index)
+
+  def diagonals: Seq[Seq[Token]] = {
+
+    val topLeftToBottomRight = for {
+      row <- 1 to dimension
+      column = row
+      index = buildIndex(row, column)
+    } yield grid(index)
+
+    val topRightToBottomLeft = for {
+      column <- dimension to 1 by -1
+      row = (dimension - column) + 1
+      index = buildIndex(row, column)
+    } yield grid(index)
+
+    Seq(topLeftToBottomRight, topRightToBottomLeft)
+  }
+
+  def isFilled: Boolean = !grid.contains(Empty)
+
   override def toString: String = {
     rows.map(row => row.map(cell => s" $cell "))
       .map(row => row.mkString("|"))

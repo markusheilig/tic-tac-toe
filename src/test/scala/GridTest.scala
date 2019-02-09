@@ -38,6 +38,45 @@ class GridTest extends FlatSpec with Matchers {
     rows(2) shouldBe Seq(Empty, O, Empty)
   }
 
+  it should "have columns" in {
+    val grid = new Grid(Vector(
+      O, Empty, X,
+      X, X, Empty,
+      Empty, O, Empty
+    ))
+    val columns = grid.columns
+    columns(0) shouldBe Seq(O, X, Empty)
+    columns(1) shouldBe Seq(Empty, X, O)
+    columns(2) shouldBe Seq(X, Empty, Empty)
+  }
+
+  it should "have diagonals" in {
+    val grid = new Grid(Vector(
+      O, Empty, X,
+      X, X, Empty,
+      Empty, O, Empty
+    ))
+    val diagonals = grid.diagonals
+    diagonals(0) shouldBe Seq(O, X, Empty)
+    diagonals(1) shouldBe Seq(X, X, Empty)
+  }
+
+  it should "be filled if there is no token 'Empty'" in {
+    Grid().isFilled shouldBe false
+
+    new Grid(Vector(
+      O, X, O,
+      X, O, X,
+      O, X, Empty
+    )).isFilled shouldBe false
+
+    new Grid(Vector(
+      O, X, O,
+      X, O, X,
+      O, X, O
+    )).isFilled shouldBe true
+  }
+
   it should "have a 'toString' representation" in {
     val grid = new Grid(Vector(
       X, O, X,
