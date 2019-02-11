@@ -7,19 +7,19 @@ class GridTest extends FlatSpec with Matchers {
     grid.dimension shouldBe 3
   }
 
-  it should "set a token if the position is empty" in {
+  it should "set a mark if the position is empty" in {
     val grid = Grid()
     grid(1, 1) shouldBe Empty
     val Right(updatedGrid) = grid.updated(1, 1, X)
     updatedGrid(1, 1) shouldBe X
   }
 
-  it should "not set a token if the position is outside the grid" in {
+  it should "not set a mark if the position is outside the grid" in {
     val grid = Grid()
     grid.updated(42, 21, X) shouldBe Left("Invalid row/column 42/21!")
   }
 
-  it should "not set a token if the position is already taken" in {
+  it should "not set a mark if the position is already taken" in {
     val Right(grid) = Grid().updated(1, 2, X)
     grid.updated(1, 2, X) shouldBe Left("Position 1/2 is already taken!")
     grid.updated(1, 2, O) shouldBe Left("Position 1/2 is already taken!")
@@ -61,7 +61,7 @@ class GridTest extends FlatSpec with Matchers {
     diagonals(1) shouldBe Seq(X, X, Empty)
   }
 
-  it should "be filled if there is no token 'Empty'" in {
+  it should "be filled if there is no mark 'Empty'" in {
     Grid().isFilled shouldBe false
 
     new Grid(Vector(

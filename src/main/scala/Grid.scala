@@ -1,5 +1,5 @@
 
-class Grid(grid: Vector[Token]) {
+class Grid(grid: Vector[Mark]) {
 
   val dimension: Int = {
     val dim = Math.sqrt(grid.length)
@@ -7,11 +7,11 @@ class Grid(grid: Vector[Token]) {
     dim.toInt
   }
 
-  def updated(row: Int, column: Int, token: Token): Either[String, Grid] = {
+  def updated(row: Int, column: Int, mark: Mark): Either[String, Grid] = {
     val index = buildIndex(row, column)
     grid.lift(index) match {
       case Some(Empty) =>
-        val updatedGrid = grid.updated(index, token)
+        val updatedGrid = grid.updated(index, mark)
         new Right(new Grid(updatedGrid))
       case Some(_) =>
         Left(s"Position $row/$column is already taken!")
@@ -20,7 +20,7 @@ class Grid(grid: Vector[Token]) {
     }
   }
 
-  def apply(row: Int, column: Int): Token = {
+  def apply(row: Int, column: Int): Mark = {
     val index = buildIndex(row, column)
     grid(index)
   }
@@ -32,21 +32,21 @@ class Grid(grid: Vector[Token]) {
     index
   }
 
-  def rows: Seq[Seq[Token]] = for {
+  def rows: Seq[Seq[Mark]] = for {
     row <- 1 to dimension
   } yield for {
     column <- 1 to dimension
     index = buildIndex(row, column)
   } yield grid(index)
 
-  def columns: Seq[Seq[Token]] = for {
+  def columns: Seq[Seq[Mark]] = for {
     column <- 1 to dimension
   } yield for {
     row <- 1 to dimension
     index = buildIndex(row, column)
   } yield grid(index)
 
-  def diagonals: Seq[Seq[Token]] = {
+  def diagonals: Seq[Seq[Mark]] = {
 
     val topLeftToBottomRight = for {
       row <- 1 to dimension
@@ -77,7 +77,7 @@ object Grid {
 
   def apply(): Grid = {
     val dimension = 3
-    val grid = Vector.fill[Token](dimension * dimension)(Empty)
+    val grid = Vector.fill[Mark](dimension * dimension)(Empty)
     new Grid(grid)
   }
 

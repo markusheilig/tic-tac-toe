@@ -47,12 +47,12 @@ class GameStatusTest extends FlatSpec with Matchers {
     GameStatus(grid) shouldBe Draw
   }
 
-  it should "be unfinished if there is no win and there are empty places" in {
+  it should "be active if there is no win and there are empty places" in {
     val grid = new Grid(Vector(
       X, X, Empty,
       X, O, O,
       O, X, X
     ))
-    GameStatus(grid) shouldBe Unfinished
+    GameStatus(grid) shouldBe Active
   }
 }
