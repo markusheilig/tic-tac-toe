@@ -2,9 +2,18 @@ import scala.annotation.tailrec
 import scala.io.StdIn.{readChar, readInt}
 import scala.util.{Success, Try}
 
-object TicTacToeApp extends App {
+object TicTacToeApp {
 
-  val userName = System.getProperty("user.name")
+  val userName: String = System.getProperty("user.name")
+  val robotEmoji: String = "\uD83E\uDD16"
+  val partyPopperEmoji: String = "\uD83C\uDF89"
+  val thumsUpEmoji: String = "\uD83D\uDC4D"
+  val goodbyeEmoji: String = "\uD83D\uDC4B"
+
+
+  def main(args: Array[String]): Unit = {
+    start()
+  }
 
   @tailrec
   def readColumn(dimension: Int): Int = {
@@ -66,7 +75,7 @@ object TicTacToeApp extends App {
 
   @tailrec
   def readRestartGame(): Boolean = {
-    println(s"Do you want to play another round, (y)es or (n)o? ")
+    print(s"Do you want to play another round, (y)es or (n)o? ")
 
     Try(readChar().toLower) match {
       case Success('y') =>
@@ -86,38 +95,39 @@ object TicTacToeApp extends App {
     val userStart = readUserStart()
 
     val computer = user.opponent
+    val ai: AI = RandomAI
     var currentPlayer = if (userStart) user else computer
     var grid = Grid()
 
-    while (GameStatus(grid) == Active) {
-      println(grid)
 
-      val (row, column) = currentPlayer match {
+    while (GameStatus(grid) == Active) {
+      println(grid + System.lineSeparator)
+
+      val (row, column) = (currentPlayer: @unchecked) match {
         case `user` =>
           println(s"Hey $userName, its your turn!")
           val row = readRow(grid.dimension)
           val column = readColumn(grid.dimension)
           (row, column)
         case `computer` =>
-          println(s"The computer\uD83E\uDD16 makes a decision...")
-          // read computer input from cmd line for test purposes
-          val row = readRow(grid.dimension)
-          val column = readColumn(grid.dimension)
-          (row, column)
+          println(s"The computer$robotEmoji makes a decision...")
+          ai.selectPosition(grid, computer)
       }
 
       grid.updated(row, column, currentPlayer) match {
         case Right(updatedGrid) =>
           grid = updatedGrid
-          println(grid)
           GameStatus(grid) match {
             case Win(`user`) =>
-              println(s"Congratulations $userName, you have won! \uD83C\uDF89")
+              println(grid)
+              println(s"Congratulations $userName, you have won!$partyPopperEmoji")
             case Win(`computer`) =>
-              println("The computer\uD83E\uDD16 has won!")
+              println(grid)
+              println(s"The computer$robotEmoji has won!")
               println(s"Keep trying $userName, next time it will work!")
             case Draw =>
-              println("That's a draw, that's good! \uD83D\uDC4D")
+              println(grid)
+              println(s"That's a draw, that's good!$thumsUpEmoji")
             case Active =>
               currentPlayer = currentPlayer.opponent
           }
@@ -129,10 +139,8 @@ object TicTacToeApp extends App {
     if (readRestartGame()) {
       start()
     } else {
-      println(s"Thank you for playing! See you next time, $userName!")
+      println(s"Thank you for playing! See you next time, $userName $goodbyeEmoji")
     }
   }
 
-
-  start()
 }

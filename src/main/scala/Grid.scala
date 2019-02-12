@@ -32,6 +32,12 @@ class Grid(grid: Vector[Mark]) {
     index
   }
 
+  def buildPosition(index: Int): (Int, Int) = {
+    val row = (index / dimension) + 1
+    val column = (index % dimension) + 1
+    (row, column)
+  }
+
   def rows: Seq[Seq[Mark]] = for {
     row <- 1 to dimension
   } yield for {
@@ -64,6 +70,11 @@ class Grid(grid: Vector[Mark]) {
   }
 
   def isFilled: Boolean = !grid.contains(Empty)
+
+  def availablePositions: IndexedSeq[(Int, Int)] = for {
+    index <- grid.indices if grid(index) == Empty
+    position = buildPosition(index)
+  } yield position
 
   override def toString: String = {
     rows.map(row => row.map(cell => s" $cell "))

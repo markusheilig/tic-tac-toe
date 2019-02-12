@@ -91,4 +91,25 @@ class GridTest extends FlatSpec with Matchers {
         " x |   | x "
   }
 
+  it should "return available positions" in {
+    Grid().availablePositions shouldBe IndexedSeq(
+      (1, 1), (1, 2), (1, 3), (2, 1), (2, 2),
+      (2, 3), (3, 1), (3, 2), (3, 3)
+    )
+
+    new Grid(Vector(
+      X, O, X,
+      O, X, O,
+      O, X, O
+    )).availablePositions shouldBe IndexedSeq()
+
+    new Grid(Vector(
+      X, O, Empty,
+      Empty, O, O,
+      X, Empty, Empty
+    )).availablePositions shouldBe IndexedSeq(
+      (1, 3), (2, 1), (3, 2), (3, 3)
+    )
+  }
+
 }
