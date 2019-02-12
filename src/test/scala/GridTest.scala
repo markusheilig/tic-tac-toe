@@ -112,4 +112,13 @@ class GridTest extends FlatSpec with Matchers {
     )
   }
 
+  it should "throw an assertion error if the grid is not of dimension NxN" in {
+    assertThrows[AssertionError](
+      new Grid(Vector(
+        X, O, Empty,
+        X, Empty, Empty
+      ))
+    )
+  }
+
 }

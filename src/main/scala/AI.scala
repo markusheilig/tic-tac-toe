@@ -31,8 +31,6 @@ object NegaMaxAI extends AI {
           (1, null)
         case Win(`opponent`) =>
           (-1, null)
-        case Win(_) =>
-          (-level, null)
         case Draw =>
           (0, null)
         case Active =>

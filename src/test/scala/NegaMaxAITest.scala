@@ -33,4 +33,14 @@ class NegaMaxAITest extends FlatSpec with Matchers {
     NegaMaxAI.selectPosition(grid, X) shouldBe(2, 3)
   }
 
+  it should "return 'null' on a filled grid" in {
+    val grid = new Grid(Vector(
+      X, O, X,
+      O, X, O,
+      O, X, O
+    ))
+    NegaMaxAI.selectPosition(grid, X) shouldBe null
+    NegaMaxAI.selectPosition(grid, O) shouldBe null
+  }
+
 }
