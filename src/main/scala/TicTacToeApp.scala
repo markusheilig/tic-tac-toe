@@ -24,7 +24,7 @@ object TicTacToeApp {
       case Success(column) if columnRange.contains(column) =>
         column
       case _ =>
-        println(s"That's an invalid choice!")
+        printInvalidChoice()
         readColumn(dimension)
     }
   }
@@ -38,7 +38,7 @@ object TicTacToeApp {
       case Success(column) if rowRange.contains(column) =>
         column
       case _ =>
-        println(s"That's an invalid choice!")
+        printInvalidChoice()
         readRow(dimension)
     }
   }
@@ -53,7 +53,7 @@ object TicTacToeApp {
       case Success('o') =>
         O
       case _ =>
-        println(s"That's an invalid choice!")
+        printInvalidChoice()
         readUserMark()
     }
   }
@@ -68,7 +68,7 @@ object TicTacToeApp {
       case Success('n') =>
         false
       case _ =>
-        println(s"That's an invalid choice!")
+        printInvalidChoice()
         readUserStart()
     }
   }
@@ -83,8 +83,27 @@ object TicTacToeApp {
       case Success('n') =>
         false
       case _ =>
-        println(s"That's an invalid choice!")
+        printInvalidChoice()
         readRestartGame()
+    }
+  }
+
+  def printInvalidChoice(): Unit = {
+    println("That's an invalid choice!")
+  }
+
+  @tailrec
+  def readAI(): AI = {
+    print(s"Please choose difficulty, (e)asy or (h)ard? ")
+
+    Try(readChar().toLower) match {
+      case Success('e') =>
+        RandomAI
+      case Success('h') =>
+        NegaMaxAI
+      case _ =>
+        printInvalidChoice()
+        readAI()
     }
   }
 
@@ -93,12 +112,11 @@ object TicTacToeApp {
   def start(): Unit = {
     val user = readUserMark()
     val userStart = readUserStart()
-
+    val ai = readAI()
     val computer = user.opponent
-    val ai: AI = RandomAI
+
     var currentPlayer = if (userStart) user else computer
     var grid = Grid()
-
 
     while (GameStatus(grid) == Active) {
       println(grid + System.lineSeparator)
