@@ -12,6 +12,7 @@ object TicTacToeApp {
 
 
   def main(args: Array[String]): Unit = {
+    println("Welcome to Tic-Tac-Toe!")
     start()
   }
 
@@ -126,10 +127,13 @@ object TicTacToeApp {
           println(s"Hey $userName, its your turn!")
           val row = readRow(grid.dimension)
           val column = readColumn(grid.dimension)
+          println(s"You chose the move row = $row, column = $column")
           (row, column)
         case `computer` =>
           println(s"The computer$robotEmoji makes a decision...")
-          ai.selectPosition(grid, computer)
+          val (row, column) = ai.selectPosition(grid, computer)
+          println(s"The computer$robotEmoji chose the move row = $row, column = $column")
+          (row, column)
       }
 
       grid.updated(row, column, currentPlayer) match {
