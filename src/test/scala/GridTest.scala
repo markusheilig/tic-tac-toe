@@ -91,6 +91,23 @@ class GridTest extends FlatSpec with Matchers {
         " x |   | x "
   }
 
+  it should "have a 'toString' representation for arbitrary dimension (here 4x4)" in {
+    val grid = new Grid(Vector(
+      X, O, X, Empty,
+      Empty, O, O, X,
+      X, Empty, X, Empty,
+      O, X, O, X
+    ))
+    grid.toString shouldBe
+        " x | o | x |   \n" +
+        "---------------\n" +
+        "   | o | o | x \n" +
+        "---------------\n" +
+        " x |   | x |   \n" +
+        "---------------\n" +
+        " o | x | o | x "
+  }
+
   it should "return available positions" in {
     Grid().availablePositions shouldBe IndexedSeq(
       (1, 1), (1, 2), (1, 3), (2, 1), (2, 2),

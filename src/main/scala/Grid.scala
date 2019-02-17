@@ -77,9 +77,10 @@ class Grid(grid: Vector[Mark]) {
   } yield position
 
   override def toString: String = {
+    val dashes = "-" * (dimension * 3 + dimension - 1)
     rows.map(row => row.map(cell => s" $cell "))
       .map(row => row.mkString("|"))
-      .mkString(s"\n-----------\n")
+      .mkString(s"\n$dashes\n")
   }
 
 }
