@@ -87,8 +87,7 @@ class Grid(grid: Vector[Mark]) {
 
 object Grid {
 
-  def apply(): Grid = {
-    val dimension = 3
+  def apply(dimension: Int = 3): Grid = {
     val grid = Vector.fill[Mark](dimension * dimension)(Empty)
     new Grid(grid)
   }
