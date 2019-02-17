@@ -23,6 +23,27 @@ max(a, b) = -min(-a, -b)
 
 and thus there is no need to explicitly distinguish in which level the evaluation step of a move takes places. This is done by a value called `level` which equals `max=1` for the computer's turn or `min=-1` for the player's turn.
 
+## Project Setup
+
+1. Clone this repository to any destination path you want (for example '~/Downloads/tic-tac-toe').
+
+2. Open terminal and navigate to this directory:
+   ```
+   $ cd ~/Downloads/tic-tac-toe
+   ```
+4. Compile project:
+   ```
+   $ sbt compile
+   ```
+5. Run tests:
+   ```
+   $ sbt test
+   ```
+6. Run tic-tac-toe game:
+   ```
+   $ sbt run
+   ```
+
 ## Preview
 ```
 The computer🤖 makes a decision...
