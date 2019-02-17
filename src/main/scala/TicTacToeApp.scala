@@ -1,6 +1,6 @@
 import scala.annotation.tailrec
 import scala.io.StdIn.{readChar, readInt}
-import scala.util.{Success, Try}
+import scala.util.{Failure, Success, Try}
 
 object TicTacToeApp {
 
@@ -14,6 +14,24 @@ object TicTacToeApp {
   def main(args: Array[String]): Unit = {
     println("Welcome to Tic-Tac-Toe!")
     start()
+  }
+
+  @tailrec
+  def readDimension(): Int = {
+    val minDimension = 3
+    val defaultDimension = 3
+    print(s"Please insert dimension (default $defaultDimension): ")
+
+    Try(readInt()) match {
+      case Success(dimension) if dimension >= minDimension =>
+        dimension
+      case Failure(t: NumberFormatException) if t.getMessage == "For input string: \"\"" =>
+        // in this case the user just hit the 'return' key  --> use the default dimension
+        defaultDimension
+      case _ =>
+        printInvalidChoice()
+        readDimension()
+    }
   }
 
   @tailrec
@@ -114,10 +132,11 @@ object TicTacToeApp {
     val user = readUserMark()
     val userStart = readUserStart()
     val ai = readAI()
+    val dim = readDimension()
     val computer = user.opponent
 
     var currentPlayer = if (userStart) user else computer
-    var grid = Grid()
+    var grid = Grid(dim)
 
     while (GameStatus(grid) == Active) {
       println(grid + System.lineSeparator)
