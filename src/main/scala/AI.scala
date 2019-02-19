@@ -25,7 +25,7 @@ object NegaMaxAI extends AI {
   override def selectPosition(grid: Grid, ai: Mark): Position = {
     val opponent = ai.opponent
 
-    def negamax(g: Grid, mark: Mark, level: Int): (Ranking, Position) = {
+    def negamax(g: Grid, mark: Mark, level: Int, depth: Int): (Ranking, Position) = {
       GameStatus(g) match {
         case Win(`ai`) =>
           (1, null)
@@ -37,12 +37,13 @@ object NegaMaxAI extends AI {
           var bestRanking: Ranking = -level
           var bestPos: Position = null
           // pruning: check if we already found the best ranking
-          for (position@(row, column) <- g.availablePositions if bestRanking != level) {
+          for (position@(row, column) <- g.availablePositions
+               if bestRanking != level && depth >= 0) {
             val Right(updatedGrid) = g.updated(row, column, mark)
-            val (ranking, _) = negamax(updatedGrid, mark.opponent, -level)
+            val (ranking, _) = negamax(updatedGrid, mark.opponent, -level, depth - 1)
             // negamax: multiply ranking by level and check for max value
             // -> in this case we do not have to distinguish between min and max level
-            if (ranking * level >= bestRanking) {
+            if (ranking * level >= bestRanking || depth == 0) {
               bestRanking = ranking
               bestPos = position
             }
@@ -53,7 +54,7 @@ object NegaMaxAI extends AI {
 
     // check best position for ai by maximizing game result
     val max = 1
-    val (_, bestPosition) = negamax(grid, mark = ai, level = max)
+    val (_, bestPosition) = negamax(grid, mark = ai, level = max, depth = 10)
     bestPosition
   }
 
