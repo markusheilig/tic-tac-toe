@@ -1,5 +1,5 @@
 
-class Grid(grid: Vector[Mark]) {
+class Board(grid: Vector[Mark]) {
 
   val dimension: Int = {
     val dim = Math.sqrt(grid.length)
@@ -7,22 +7,17 @@ class Grid(grid: Vector[Mark]) {
     dim.toInt
   }
 
-  def updated(row: Int, column: Int, mark: Mark): Either[String, Grid] = {
+  val status = BoardStatus(this)
+
+  def updated(row: Int, column: Int, mark: Mark): Board = {
     val index = buildIndex(row, column)
-    grid.lift(index) match {
-      case Some(Empty) =>
-        val updatedGrid = grid.updated(index, mark)
-        new Right(new Grid(updatedGrid))
-      case Some(_) =>
-        Left(s"Position $row/$column is already taken!")
-      case None =>
-        Left(s"Invalid row/column $row/$column!")
-    }
+    val updatedGrid = grid.updated(index, mark)
+    new Board(updatedGrid)
   }
 
-  def apply(row: Int, column: Int): Mark = {
+  def apply(row: Int, column: Int): Option[Mark] = {
     val index = buildIndex(row, column)
-    grid(index)
+    grid.lift(index)
   }
 
   private def buildIndex(row: Int, column: Int) = {
@@ -85,11 +80,12 @@ class Grid(grid: Vector[Mark]) {
 
 }
 
-object Grid {
+object Board {
 
-  def apply(dimension: Int = 3): Grid = {
+  def apply(dimension: Int = 3): Board = {
     val grid = Vector.fill[Mark](dimension * dimension)(Empty)
-    new Grid(grid)
+    new Board(grid)
   }
 
 }
+    

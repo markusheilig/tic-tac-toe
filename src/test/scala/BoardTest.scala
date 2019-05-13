@@ -1,33 +1,21 @@
 import org.scalatest.{FlatSpec, Matchers}
 
-class GridTest extends FlatSpec with Matchers {
+class BoardTest extends FlatSpec with Matchers {
 
   "A Grid" should "have a dimension" in {
-    val grid = Grid()
+    val grid = Board()
     grid.dimension shouldBe 3
   }
 
   it should "set a mark if the position is empty" in {
-    val grid = Grid()
-    grid(1, 1) shouldBe Empty
-    val Right(updatedGrid) = grid.updated(1, 1, X)
-    updatedGrid(1, 1) shouldBe X
+    val grid = Board()
+    grid(1, 1) shouldBe Some(Empty)
+    val updatedGrid = grid.updated(1, 1, X)
+    updatedGrid(1, 1) shouldBe Some(X)
   }
-
-  it should "not set a mark if the position is outside the grid" in {
-    val grid = Grid()
-    grid.updated(42, 21, X) shouldBe Left("Invalid row/column 42/21!")
-  }
-
-  it should "not set a mark if the position is already taken" in {
-    val Right(grid) = Grid().updated(1, 2, X)
-    grid.updated(1, 2, X) shouldBe Left("Position 1/2 is already taken!")
-    grid.updated(1, 2, O) shouldBe Left("Position 1/2 is already taken!")
-  }
-
 
   it should "have rows" in {
-    val grid = new Grid(Vector(
+    val grid = new Board(Vector(
       O, Empty, X,
       X, X, Empty,
       Empty, O, Empty
@@ -39,7 +27,7 @@ class GridTest extends FlatSpec with Matchers {
   }
 
   it should "have columns" in {
-    val grid = new Grid(Vector(
+    val grid = new Board(Vector(
       O, Empty, X,
       X, X, Empty,
       Empty, O, Empty
@@ -51,7 +39,7 @@ class GridTest extends FlatSpec with Matchers {
   }
 
   it should "have diagonals" in {
-    val grid = new Grid(Vector(
+    val grid = new Board(Vector(
       O, Empty, X,
       X, X, Empty,
       Empty, O, Empty
@@ -62,15 +50,15 @@ class GridTest extends FlatSpec with Matchers {
   }
 
   it should "be filled if there is no mark 'Empty'" in {
-    Grid().isFilled shouldBe false
+    Board().isFilled shouldBe false
 
-    new Grid(Vector(
+    new Board(Vector(
       O, X, O,
       X, O, X,
       O, X, Empty
     )).isFilled shouldBe false
 
-    new Grid(Vector(
+    new Board(Vector(
       O, X, O,
       X, O, X,
       O, X, O
@@ -78,7 +66,7 @@ class GridTest extends FlatSpec with Matchers {
   }
 
   it should "have a 'toString' representation" in {
-    val grid = new Grid(Vector(
+    val grid = new Board(Vector(
       X, O, X,
       Empty, O, O,
       X, Empty, X
@@ -92,7 +80,7 @@ class GridTest extends FlatSpec with Matchers {
   }
 
   it should "have a 'toString' representation for arbitrary dimension (here 4x4)" in {
-    val grid = new Grid(Vector(
+    val grid = new Board(Vector(
       X, O, X, Empty,
       Empty, O, O, X,
       X, Empty, X, Empty,
@@ -109,18 +97,18 @@ class GridTest extends FlatSpec with Matchers {
   }
 
   it should "return available positions" in {
-    Grid().availablePositions shouldBe IndexedSeq(
+    Board().availablePositions shouldBe IndexedSeq(
       (1, 1), (1, 2), (1, 3), (2, 1), (2, 2),
       (2, 3), (3, 1), (3, 2), (3, 3)
     )
 
-    new Grid(Vector(
+    new Board(Vector(
       X, O, X,
       O, X, O,
       O, X, O
     )).availablePositions shouldBe IndexedSeq()
 
-    new Grid(Vector(
+    new Board(Vector(
       X, O, Empty,
       Empty, O, O,
       X, Empty, Empty
@@ -131,7 +119,7 @@ class GridTest extends FlatSpec with Matchers {
 
   it should "throw an assertion error if the grid is not of dimension NxN" in {
     assertThrows[AssertionError](
-      new Grid(Vector(
+      new Board(Vector(
         X, O, Empty,
         X, Empty, Empty
       ))

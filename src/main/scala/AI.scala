@@ -4,14 +4,14 @@ trait AI {
 
   type Position = (Int, Int)
 
-  def selectPosition(grid: Grid, mark: Mark): Position
+  def selectPosition(grid: Board, mark: Mark): Position
 
 }
 
 
 object RandomAI extends AI {
 
-  override def selectPosition(grid: Grid, mark: Mark): Position = {
+  override def selectPosition(grid: Board, mark: Mark): Position = {
     Random.shuffle(grid.availablePositions).head
   }
 
@@ -22,11 +22,11 @@ object NegaMaxAI extends AI {
 
   private type Ranking = Int
 
-  override def selectPosition(grid: Grid, ai: Mark): Position = {
+  override def selectPosition(grid: Board, ai: Mark): Position = {
     val opponent = ai.opponent
 
-    def negamax(g: Grid, mark: Mark, level: Int, depth: Int): (Ranking, Position) = {
-      GameStatus(g) match {
+    def negamax(g: Board, mark: Mark, level: Int, depth: Int): (Ranking, Position) = {
+      BoardStatus(g) match {
         case Win(`ai`) =>
           (1, null)
         case Win(`opponent`) =>
@@ -39,7 +39,7 @@ object NegaMaxAI extends AI {
           // pruning: check if we already found the best ranking
           for (position@(row, column) <- g.availablePositions
                if bestRanking != level && depth >= 0) {
-            val Right(updatedGrid) = g.updated(row, column, mark)
+            val updatedGrid = g.updated(row, column, mark)
             val (ranking, _) = negamax(updatedGrid, mark.opponent, -level, depth - 1)
             // negamax: multiply ranking by level and check for max value
             // -> in this case we do not have to distinguish between min and max level
