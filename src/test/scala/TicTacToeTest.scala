@@ -93,23 +93,37 @@ class TicTacToeTest extends FlatSpec with Matchers {
     actionResult shouldBe a[GameWon]
   }
 
-  it should "play until game is finished by a won or a draw" in {
+  it should "loop until a game is finished" in {
+
+    val game = GameState(Board(), X)
+
+    val nextMoveProvider: GameState => (Int, Int) = moves(
+      (1, 1), // Player X
+      (3, 3), // Player O
+      (1, 2), // Player X
+      (3, 2), // Player O
+      (1, 3) // Player X (win)
+    )
+
+    val gameEvents = TicTacToe.play(game, nextMoveProvider, nextMoveProvider, observer = _ => ())
+    gameEvents.last shouldBe a[GameWon]
+  }
+
+
+  it should "report all game events" in {
+
     val gameState = GameState(Board(), X)
-    val moves = collection.mutable.ListBuffer[(Int, Int)](
+
+    val nextMoveProvider: GameState => (Int, Int) = moves(
       (1, 1), // X
       (1, 1), // O (already taken)
       (5, 5), // O (invalid row/column)
       (3, 3), // O
       (1, 2), // X
       (3, 2), // O
-      (1, 3)  // X win
+      (1, 3) // X win
     )
 
-    val nextMoveProvider: GameState => (Int, Int) = _ => {
-      val move = moves.head
-      moves.remove(0)
-      move
-    }
     val results = TicTacToe.play(gameState, nextMoveProvider, nextMoveProvider, _ => ())
     results.length shouldBe 8
     results(0) shouldBe a[GameInitialized]
@@ -120,29 +134,31 @@ class TicTacToeTest extends FlatSpec with Matchers {
     results(5) shouldBe a[GameUpdated]
     results(6) shouldBe a[GameUpdated]
     results(7) shouldBe a[GameWon]
+
   }
 
-  it should "inform an observer about the game actions" in {
+  it should "inform an observer about game events" in {
     val gameState = GameState(Board(), X)
-    val moves = collection.mutable.ListBuffer[(Int, Int)](
+    val nextMoveProvider: GameState => (Int, Int) = moves(
       (1, 1), // X
       (3, 3), // O
       (1, 2), // X
       (3, 2), // O
-      (1, 3)  // X win
+      (1, 3) // X win
     )
-    val totalMoves = moves.size
-
-    val nextMoveProvider: GameState => (Int, Int) = _ => {
-      val move = moves.head
-      moves.remove(0)
-      move
-    }
 
     var eventCounter = 0
     TicTacToe.play(gameState, nextMoveProvider, nextMoveProvider, _ => eventCounter += 1)
+    eventCounter shouldBe 6 // initial game event + 5 move events
+  }
 
-    eventCounter shouldBe totalMoves + 1 // + 1 because of initial game event
+  private def moves(moves: (Int, Int)*) = new Function[GameState, (Int, Int)] {
+    private var _moves = moves.toList
+    override def apply(_gameState: GameState): (Int, Int) = {
+      val h :: t = _moves
+      _moves = t
+      h
+    }
   }
 
 }
