@@ -1,3 +1,4 @@
+import TicTacToe.{Column, Row}
 
 class Board(grid: Vector[Mark]) {
 
@@ -9,25 +10,25 @@ class Board(grid: Vector[Mark]) {
 
   val status = BoardStatus(this)
 
-  def updated(row: Int, column: Int, mark: Mark): Board = {
+  def updated(row: Row, column: Column, mark: Mark): Board = {
     val index = buildIndex(row, column)
     val updatedGrid = grid.updated(index, mark)
     new Board(updatedGrid)
   }
 
-  def apply(row: Int, column: Int): Option[Mark] = {
+  def apply(row: Row, column: Column): Option[Mark] = {
     val index = buildIndex(row, column)
     grid.lift(index)
   }
 
-  private def buildIndex(row: Int, column: Int) = {
+  private def buildIndex(row: Row, column: Column) = {
     val rowIndex = row - 1
     val columnIndex = column - 1
     val index = rowIndex * dimension + columnIndex
     index
   }
 
-  def buildPosition(index: Int): (Int, Int) = {
+  def buildPosition(index: Int): (Row, Column) = {
     val row = (index / dimension) + 1
     val column = (index % dimension) + 1
     (row, column)
@@ -66,7 +67,7 @@ class Board(grid: Vector[Mark]) {
 
   def isFilled: Boolean = !grid.contains(Empty)
 
-  def availablePositions: IndexedSeq[(Int, Int)] = for {
+  def availablePositions: IndexedSeq[(Row, Column)] = for {
     index <- grid.indices if grid(index) == Empty
     position = buildPosition(index)
   } yield position

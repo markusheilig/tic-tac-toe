@@ -1,17 +1,17 @@
+import TicTacToe.{Column, Row}
+
 import scala.util.Random
 
 trait AI {
 
-  type Position = (Int, Int)
-
-  def selectPosition(grid: Board, mark: Mark): Position
+  def selectPosition(grid: Board, mark: Mark): (Row, Column)
 
 }
 
 
 object RandomAI extends AI {
 
-  override def selectPosition(grid: Board, mark: Mark): Position = {
+  override def selectPosition(grid: Board, mark: Mark): (Row, Column) = {
     Random.shuffle(grid.availablePositions).head
   }
 
@@ -22,10 +22,10 @@ object NegaMaxAI extends AI {
 
   private type Ranking = Int
 
-  override def selectPosition(grid: Board, ai: Mark): Position = {
+  override def selectPosition(grid: Board, ai: Mark): (Row, Column) = {
     val opponent = ai.opponent
 
-    def negamax(g: Board, mark: Mark, level: Int, depth: Int): (Ranking, Position) = {
+    def negamax(g: Board, mark: Mark, level: Int, depth: Int): (Ranking, (Row, Column)) = {
       BoardStatus(g) match {
         case Win(`ai`) =>
           (1, null)
@@ -35,7 +35,7 @@ object NegaMaxAI extends AI {
           (0, null)
         case Active =>
           var bestRanking: Ranking = -level
-          var bestPos: Position = null
+          var bestPos: (Row, Column) = null
           // pruning: check if we already found the best ranking
           for (position@(row, column) <- g.availablePositions
                if bestRanking != level && depth >= 0) {

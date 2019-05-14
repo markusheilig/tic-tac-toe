@@ -2,16 +2,17 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class InputReaderTest extends FlatSpec with Matchers {
 
-  "A Reader" should "read until a certain condition is fulfilled" in {
+  "An InputReader" should "read until the input satisfies a certain condition" in {
+
+    // increment myInt and return the new value on each function call
     var myInt = 0
-    val incrementAndProvide = () => {
+    val incrementAndGet = () => {
       myInt += 1
       myInt
     }
 
-    var errorCounter = 0
-    InputReader.read[Int](incrementAndProvide, _ > 3, _ => errorCounter += 1)
-    errorCounter shouldBe 3
+    val input = InputReader.read[Int](incrementAndGet, _ >= 3, _ => {})
+    input shouldBe myInt
   }
 
   it should "call an error function when the input provider throws an error" in {

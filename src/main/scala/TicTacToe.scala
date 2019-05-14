@@ -2,10 +2,12 @@ import scala.annotation.tailrec
 
 object TicTacToe {
 
-  type MoveProvider = GameState => (Int, Int)
+  type Row = Int
+  type Column = Int
+  type MoveProvider = GameState => (Row, Column)
   type Observer = GameEvent => Unit
 
-  def play(gameState: GameState, humanMove: MoveProvider, aiMove: MoveProvider, observer: Observer): List[GameEvent] = {
+  def play(gameState: GameState, humanMoveProvider: MoveProvider, computerMoveProvider: MoveProvider, observer: Observer): List[GameEvent] = {
 
    @tailrec
     def go(gameState: GameState, results: List[GameEvent]): List[GameEvent] =
@@ -13,9 +15,9 @@ object TicTacToe {
         case Active =>
           val (row, column) =
             if (gameState.currentPlayer == gameState.humanPlayer)
-              humanMove(gameState)
+              humanMoveProvider(gameState)
             else
-              aiMove(gameState)
+              computerMoveProvider(gameState)
           val result = makeMove(row, column, gameState)
           observer(result)
           go(result.gameState, results :+ result)

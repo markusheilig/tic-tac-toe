@@ -1,3 +1,5 @@
+import TicTacToe.{Column, Row}
+
 import scala.annotation.tailrec
 import scala.io.StdIn.{readChar, readInt}
 
@@ -27,7 +29,7 @@ object Main {
     }
   }
 
-  private def getHumanMove(gameState: GameState): (Int, Int) = {
+  private def getHumanMove(gameState: GameState): (Row, Column) = {
     print("Please enter row: ")
     val row = InputReader.readChoice(readInt, (1 to gameState.grid.dimension).toSet, onInputError = printInvalidChoice)
     print("Please enter column: ")
@@ -35,14 +37,14 @@ object Main {
     (row, column)
   }
 
-  private def getComputerMove(gameState: GameState): (Int, Int) = {
+  private def getComputerMove(gameState: GameState): (Row, Column) = {
     println("The computer makes a selection...")
     gameState.ai.selectPosition(gameState.grid, gameState.aiPlayer)
   }
 
   private def readDimension(): Int = {
     print(s"Please insert dimension (e.g. 3): ")
-    InputReader.read[Int](readInt, _ >= 3, printInvalidChoice)
+    InputReader.read[Int](readInt, _ > 2, printInvalidChoice)
   }
 
   private def readUserMark(): Mark = {

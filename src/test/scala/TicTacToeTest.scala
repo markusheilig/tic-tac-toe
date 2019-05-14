@@ -1,3 +1,4 @@
+import TicTacToe.{Column, Row}
 import org.scalatest.{FlatSpec, Matchers}
 
 class TicTacToeTest extends FlatSpec with Matchers {
@@ -97,7 +98,7 @@ class TicTacToeTest extends FlatSpec with Matchers {
 
     val game = GameState(Board(), X)
 
-    val nextMoveProvider: GameState => (Int, Int) = moves(
+    val nextMoveProvider: GameState => (Row, Column) = moves(
       (1, 1), // Player X
       (3, 3), // Player O
       (1, 2), // Player X
@@ -114,7 +115,7 @@ class TicTacToeTest extends FlatSpec with Matchers {
 
     val gameState = GameState(Board(), X)
 
-    val nextMoveProvider: GameState => (Int, Int) = moves(
+    val nextMoveProvider: GameState => (Row, Column) = moves(
       (1, 1), // X
       (1, 1), // O (already taken)
       (5, 5), // O (invalid row/column)
@@ -139,7 +140,7 @@ class TicTacToeTest extends FlatSpec with Matchers {
 
   it should "inform an observer about game events" in {
     val gameState = GameState(Board(), X)
-    val nextMoveProvider: GameState => (Int, Int) = moves(
+    val nextMoveProvider: GameState => (Row, Column) = moves(
       (1, 1), // X
       (3, 3), // O
       (1, 2), // X
@@ -152,9 +153,9 @@ class TicTacToeTest extends FlatSpec with Matchers {
     eventCounter shouldBe 6 // initial game event + 5 move events
   }
 
-  private def moves(moves: (Int, Int)*) = new Function[GameState, (Int, Int)] {
+  private def moves(moves: (Row, Column)*) = new Function[GameState, (Row, Column)] {
     private var _moves = moves.toList
-    override def apply(_gameState: GameState): (Int, Int) = {
+    override def apply(_gameState: GameState): (Row, Column) = {
       val h :: t = _moves
       _moves = t
       h
